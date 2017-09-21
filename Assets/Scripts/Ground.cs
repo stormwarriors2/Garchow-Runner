@@ -1,6 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+/// <summary>
+/// Ground
+/// obtains powerup 
+/// obtains wall 
+/// </summary>
 
 public class Ground : MonoBehaviour {
 
@@ -31,26 +36,30 @@ public class Ground : MonoBehaviour {
     {
         transform.localPosition = new Vector3(transform.localPosition.x + .1f, transform.localPosition.y, transform.localPosition.z);
 
-        if (transform.localPosition.x >= 5 && spawnNew == false)
+        if (transform.localPosition.x >= 21 && spawnNew == false)
         {
             Instantiate(prefabFloor, new Vector3(-10, -1, 0), Quaternion.identity);
             spawnNew = true;
         }
-        if (transform.localPosition.x >= 10)
+        if (transform.localPosition.x >= 21)
         {
             Destroy(this.gameObject);
         }
     }
+    /// <summary>
+    /// WallBehavior
+    /// creates wall and then destroys game object after certain distance from player
+    /// </summary>
     private void WallBehavior()
     {
         transform.localPosition = new Vector3(transform.localPosition.x + .1f, transform.localPosition.y, transform.localPosition.z);
 
-        if (transform.localPosition.x >= 5 && spawnNew == false)
+        if (transform.localPosition.x >= 21 && spawnNew == false)
         {
             Instantiate(prefabFloor, new Vector3(-10, -1, 0), Quaternion.identity);
             spawnNew = true;
         }
-        if (transform.localPosition.x >= 10)
+        if (transform.localPosition.x >= 21)
         {
             Destroy(this.gameObject);
         }

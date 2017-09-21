@@ -1,7 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// PowerUp Controller
+/// Bool : Life controls player life
+/// Bool : IsGodPowerUp checks to see if god mode is created - used for testing not obtainable in game
+/// Bool : canRemove checks to see if the powerup is removed
+/// </summary>
 public class Powerup : MonoBehaviour {
 
     PlayerController player;
@@ -11,6 +16,12 @@ public class Powerup : MonoBehaviour {
     public bool canRemove = false;
 
     // Use this for initialization
+    /// <summary>
+    /// Initialization Case Switch statement
+    /// Is changed randomly by using PowerPick
+    /// Players score is increase or decreased depending on the powerup attained
+    /// Player can also lose score if they touch black powerup
+    /// </summary>
     void Start()
     {
         int powerPick = Random.Range(1, 7);
@@ -48,7 +59,7 @@ public class Powerup : MonoBehaviour {
                 break;
             case 7:
                 isGodPowerup = true;
-                GetComponent<MeshRenderer>().material.color = Color.gray;
+                GetComponent<MeshRenderer>().material.color = Color.yellow;
                 return;
                 break;
             default:
@@ -56,11 +67,10 @@ public class Powerup : MonoBehaviour {
         }
     }
 
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
+    /// <summary>
+    /// Resets Player Movement
+    /// player movement delay is added,
+    /// </summary>
     void resetPlayerMovement()
     {
         if(player.addedMoveDelay > 0)
@@ -69,7 +79,11 @@ public class Powerup : MonoBehaviour {
         }
         canRemove = true;
     }
-
+    /// <summary>
+    /// ObtainPowerUp
+    /// checks to see what type of powerup was attained
+    /// If bool is true applies powerup
+    /// </summary>
     public void obtainPowerup()
     {
         player = FindObjectOfType<PlayerController>();
@@ -91,9 +105,13 @@ public class Powerup : MonoBehaviour {
         canRemove = true;
     }
 
+    /// <summary>
+    /// Resets Player
+    /// player movement and multipler of speed is increased by 1
+    /// </summary>
     void resetPlayer()
     {
-        print("RESET MOVE!");
+        print("This aint free");
         if (player.addedMoveDelay > 0)
         {
             player.addedMoveDelay = 0;
@@ -102,19 +120,26 @@ public class Powerup : MonoBehaviour {
         canRemove = true;
     }
 
+    /// <summary>
+    /// extraLife
+    /// Player gains an extra life
+    /// </summary>
     void extraLife()
     {
-        print("Gain LIFE!");
+        print("You've Gained Life");
         if (PlayerController.life < 3)
         {
             PlayerController.life += 1;
         }
         canRemove = true;
     }
-
+    /// <summary>
+    /// GodMode
+    /// A test mod
+    /// </summary>
     void godMode()
     {
-        print("ARE GOD!");
+        print("If someone asks you if your god, SAY YES!");
         PlayerController.isGod = true;
         player.godTimer = 1;
         canRemove = true;

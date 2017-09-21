@@ -53,7 +53,10 @@ public class PlayerController : MonoBehaviour {
         //UpdateScore.score++; 
         score += 5;
     }
-
+    /// <summary>
+    /// Run
+    /// Player movement and axis movement
+    /// </summary>
     private void Run()
     {
         //timer = 60 * Time.deltaTime;

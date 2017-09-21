@@ -9,7 +9,8 @@ public class CollisionManager : MonoBehaviour {
     static public List<AABB> groundTiles = new List<AABB>();
     static public List<AABB> powerups = new List<AABB>();
     static public List<AABB> walls = new List<AABB>();
-
+    static public List<AABB> spikes = new List<AABB>();
+    static public List<AABB> lavaground = new List<AABB>();
 
 
 	// Use this for initialization
@@ -22,12 +23,18 @@ public class CollisionManager : MonoBehaviour {
 	void LateUpdate () {
         //print(wall);
         DoCollisionDetectionGround();
-        DoCollisionDetectionWall();
-        DoCollisionDetectionPowerup();
-
+            DoCollisionDetectionWall();
+            DoCollisionDetectionPowerup();
+            DoCollisionDetectionLava();
+            DoCollisionDetectionSpike();
 
     }
-
+    /// <summary>
+    /// Collision Detection - Ground
+    /// Detects collision between player and ground
+    /// Fixes player location to always stay ontop of the ground
+    /// Gravity is stopped for the player allowing for the player to jump
+    /// </summary>
     void DoCollisionDetectionGround()
     {
 
@@ -58,6 +65,13 @@ public class CollisionManager : MonoBehaviour {
 
         
     }
+
+    /// <summary>
+    /// Collision Detection - Wall
+    /// Detects collision between player and wall
+    /// object is removed and player takes damage.
+    /// Player is minused their life
+    /// </summary>
     void DoCollisionDetectionWall()
     {
         foreach (AABB wall in walls) { 
@@ -80,6 +94,13 @@ public class CollisionManager : MonoBehaviour {
     }
     }
 
+    /// <summary>
+    /// Collision Detection - powerup
+    /// Detects collision between player and powerup
+    /// Object does many things
+    /// Is destroyed on touch
+    /// 
+    /// </summary>
     void DoCollisionDetectionPowerup()
     {
         foreach (AABB powerup in powerups)
@@ -99,5 +120,50 @@ public class CollisionManager : MonoBehaviour {
             }
         }
     }
+    void DoCollisionDetectionLava()
+    {
+        foreach (AABB lava in lavaground)
+        {
+            bool resultWall = player.checkOverlap(lava);
+            //print(resultWall);
+            if (resultWall == true)
+            {
+                PlayerController.life -= 2;
+                Destroy(lava.gameObject);
+                lavaground.Remove(lava);
+                GetComponent<GameController>().lavas.Remove(lava.gameObject);
+                return;
+                //   print("collider");
+            }
+            else
+            {
 
+                print("no collision!");
+            }
+        }
+    }
+    void DoCollisionDetectionSpike()
+    {
+        foreach (AABB spike in spikes)
+        {
+            bool resultWall = player.checkOverlap(spike);
+            //print(resultWall);
+            if (resultWall == true)
+            {
+
+                PlayerController.life -= 1;
+              //  PlayerController.life -= 2;
+                Destroy(spike.gameObject);
+                spikes.Remove(spike);
+                GetComponent<GameController>().spikes.Remove(spike.gameObject);
+                return;
+                //   print("collider");
+            }
+            else
+            {
+
+                print("no collision!");
+            }
+        }
+    }
 }
