@@ -155,7 +155,7 @@ public class PlayerController : MonoBehaviour {
     {
         //print("Jumping");
         //transform.Translate(new Vector3(0, (jumpTimer * 10), 0));
-        velY += 10 * Time.deltaTime;
+        velY += speed * Time.deltaTime;
         pos.y = velY;
 
     }

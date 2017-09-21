@@ -23,7 +23,7 @@ public class CollisionManager : MonoBehaviour {
 	void LateUpdate () {
         //print(wall);
         DoCollisionDetectionGround();
-            DoCollisionDetectionWall();
+        DoCollisionDetectionWall();
             DoCollisionDetectionPowerup();
             DoCollisionDetectionLava();
             DoCollisionDetectionSpike();
