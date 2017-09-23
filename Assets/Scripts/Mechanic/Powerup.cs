@@ -28,40 +28,34 @@ public class Powerup : MonoBehaviour {
         switch (powerPick)
         {
             case 1:
+                PlayerController.score += 1500;
                 isLife = true;
                 GetComponent<MeshRenderer>().material.color = Color.red;
                 return;
-                break;
             case 2:
                 PlayerController.score += 100;
                 GetComponent<MeshRenderer>().material.color = Color.magenta;
                 return;
-                break;
             case 3:
                 PlayerController.score += 200;
                 GetComponent<MeshRenderer>().material.color = Color.cyan;
                 return;
-                break;
             case 4:
-                PlayerController.score -= 3000;
+                PlayerController.score -= 300;
                 GetComponent<MeshRenderer>().material.color = Color.black;
                 return;
-                break;
             case 5:
                 isLife = true;
                 GetComponent<MeshRenderer>().material.color = Color.blue;
                 return;
-                break;
             case 6:
-                PlayerController.score = 0;
+                PlayerController.score -= 25;
                 GetComponent<MeshRenderer>().material.color = Color.green;
                 return;
-                break;
             case 7:
-                isGodPowerup = true;
+                PlayerController.isGod = true;
                 GetComponent<MeshRenderer>().material.color = Color.yellow;
                 return;
-                break;
             default:
                 break;
         }
@@ -126,6 +120,7 @@ public class Powerup : MonoBehaviour {
     /// </summary>
     void extraLife()
     {
+
         print("You've Gained Life");
         if (PlayerController.life < 3)
         {

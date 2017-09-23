@@ -31,11 +31,13 @@ public class CollisionManager : MonoBehaviour {
 	void LateUpdate () {
         //print(wall);
         DoCollisionDetectionGround();
-        DoCollisionDetectionWall();
-            DoCollisionDetectionPowerup();
+        DoCollisionDetectionPowerup();
+        if (!PlayerController.isGod)
+        {
+            DoCollisionDetectionWall();
             DoCollisionDetectionLava();
             DoCollisionDetectionSpike();
-
+        }
     }
     /// <summary>
     /// Collision Detection - Ground

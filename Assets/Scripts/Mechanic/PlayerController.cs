@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour {
     private float moveDelay = 0;
     public float speed = 10;
     public float acceleration;
-    public float gravity = 10;
+    public float gravity = 17;
     public float velX = 10;
     public float velY = 0;
     float GRAVITY = 0;
@@ -39,12 +39,13 @@ public class PlayerController : MonoBehaviour {
     public static int life = 0;
     //private Vector3
     public AudioClip jump;
+    private float speedTotal;
 
 
     // Use this for initialization
     void Start () {
-        life = 2;
-        this.pos.y = 15;
+        life = 1;
+   //     this.pos.y = 15;
         score = 0;
 
     }
@@ -53,6 +54,7 @@ public class PlayerController : MonoBehaviour {
 	void Update ()
     {
         Run();
+        GodeMode();
         if (life > 1)
         {
             score += 5;
@@ -82,17 +84,28 @@ public class PlayerController : MonoBehaviour {
         {
             float accY = gravity * Time.deltaTime * 2;
             GRAVITY = (gravity * Time.deltaTime) * 2;
-            pos.y += velY - GRAVITY;
+            pos.y += velY - accY;
             transform.position = pos;
         }
 
-
+        if (life >= 2)
+        {
+            acceleration += .01f;
+        }
+        if (life < 2)
+        {
+            acceleration -= .01f;
+            if (acceleration < .01 )
+            {
+                acceleration = .01f;
+            }
+        }
         if (jumping > 0 && jumpTimer < .1f)
         {
 
             //velocity = gravity * Time.deltaTime;
             AudioSource.PlayClipAtPoint(jump, transform.position);
-            jumpTimer += speed * Time.deltaTime;
+            jumpTimer += speed * Time.deltaTime * gravity;
             Jump();
         }
         else
@@ -125,17 +138,15 @@ public class PlayerController : MonoBehaviour {
         {
             isSliding = false;
             GetComponent<AABB>().halfSize.y = .5f;
-            speed = 5;
+            speed = 5 * acceleration;
             slideTimer = 0;
-
+            speedTotal = speed;
         }
-        if  (score > 10000)
+
+      
+        if (speed < 4)
         {
-            speed += 5;
-            if (score > 45000)
-            {
-                speed += 10;
-            }
+            speed = 5;
         }
         if (moveDelay > 0)
         {
@@ -160,6 +171,10 @@ public class PlayerController : MonoBehaviour {
             lane++;
         }
         moveLane();
+        while (isGod == true)
+        {
+            godTimer += .5f;
+        }
     }
 
     /// <summary>
@@ -167,9 +182,7 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     void Jump()
     {
-        //print("Jumping");
-        //transform.Translate(new Vector3(0, (jumpTimer * 10), 0));
-        
+        print(velY);
         velY += speed * Time.deltaTime * 250;
         pos.y = velY;
 
@@ -182,7 +195,7 @@ public class PlayerController : MonoBehaviour {
         transform.localScale = new Vector3(transform.localScale.x, .5f, transform.localScale.z);
         if (speed > 3)
         {
-            speed = 10 - slideTimer * 3 * Time.deltaTime;
+            speed = speedTotal - slideTimer * 3 * Time.deltaTime;
         }
 
         GetComponent<AABB>().halfSize.y = .25f;
@@ -223,6 +236,17 @@ public class PlayerController : MonoBehaviour {
         {
             transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, 3);
         }
+    }
+
+    private void GodeMode ( )
+    {
+        if (godTimer >= 10)
+        {
+            isGod = false;
+            return;
+        }
+
+
     }
     /// <summary>
     /// /Apply a collision "fix" to prevent collision detection

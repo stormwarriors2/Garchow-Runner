@@ -138,7 +138,13 @@ TextMesh:
 
     Avoid the Black Power ups or you will lose points!
 
-    Avoid the Obstacles and get the highest Score you can!'
+    Avoid the Obstacles and get the highest Score you can!
+
+    The More Life you have the faster you go!
+
+    The Less Life the slower you go!
+
+    Try to hit the highest score!'
   m_OffsetZ: 0
   m_CharacterSize: 1
   m_LineSpacing: 1
