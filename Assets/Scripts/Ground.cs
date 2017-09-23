@@ -24,44 +24,7 @@ public class Ground : MonoBehaviour {
     /// </summary>
 	void Update ()
     {
-        GroundBehavior();
+        //GroundBehavior();
     }
 
-    /// <summary>
-    /// Ground Behavior
-    /// Creates ground and deletes it after player has moved x distance away from it so it is constantly spawning new platforms far infront of the player
-    /// 
-    /// </summary>
-    private void GroundBehavior()
-    {
-        transform.localPosition = new Vector3(transform.localPosition.x + .1f, transform.localPosition.y, transform.localPosition.z);
-
-        if (transform.localPosition.x >= 21 && spawnNew == false)
-        {
-            Instantiate(prefabFloor, new Vector3(-10, -1, 0), Quaternion.identity);
-            spawnNew = true;
-        }
-        if (transform.localPosition.x >= 21)
-        {
-            Destroy(this.gameObject);
-        }
-    }
-    /// <summary>
-    /// WallBehavior
-    /// creates wall and then destroys game object after certain distance from player
-    /// </summary>
-    private void WallBehavior()
-    {
-        transform.localPosition = new Vector3(transform.localPosition.x + .1f, transform.localPosition.y, transform.localPosition.z);
-
-        if (transform.localPosition.x >= 21 && spawnNew == false)
-        {
-            Instantiate(prefabFloor, new Vector3(-10, -1, 0), Quaternion.identity);
-            spawnNew = true;
-        }
-        if (transform.localPosition.x >= 21)
-        {
-            Destroy(this.gameObject);
-        }
-    }
 }

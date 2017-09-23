@@ -35,19 +35,34 @@ public class GameController : MonoBehaviour {
     public List<GameObject> spikes = new List<GameObject>();
 
     // Use this for initialization
-    void Start () {
-		
-	}
-	/// <summary>
+    void Start ()
+    {
+        CleanUp();
+        
+    }
+    /// <summary>
+    /// CleanUp
+    /// Clears all objects from the list and array.
+    /// </summary>
+    private void CleanUp()
+    {
+        chunks.Clear();
+        walls.Clear();
+        lavas.Clear();
+        powerups.Clear();
+        spikes.Clear();
+        PlayerController.score = 0;
+    }
+
+    /// <summary>
     /// Update
     /// Updates all objects within the game.
     /// </summary>
-	// Update is called once per frame
-	void Update ()
+    // Update is called once per frame
+    void Update ()
     {
         chunkCreator();
         Lose();
-      //  ObstacleSpawn();
     }
 
 
@@ -68,51 +83,58 @@ public class GameController : MonoBehaviour {
     /// </summary>
     private void chunkCreator()
     {
-        var random = Random.Range(1, 6);
+
       
       
         Remove();
-        while (chunks.Count < 6)
+        while (chunks.Count <= 7)
         {
             Vector3 position = Vector3.zero;
-            Vector3 wallPosition = new Vector3(0, 0, 0);
-  
-          
-            if (chunks.Count > 0)
+
+
+            if(chunks.Count > 0)
             {
-                position = chunks[chunks.Count - 1].transform.Find("Connecter").position;
-                if (random == 1) wallPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint01").position;
-                if (random == 2) wallPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint02").position;
-                if (random == 3) wallPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint03").position;
-                if (random == 4) wallPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint04").position;
-                if (random == 5) wallPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint05").position;
-                if (random == 6) wallPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint06").position;
+            //    position = chunks[chunks.Count - 1].transform.Find("Connector").position;
             }
 
+            // for(int i = 1; i < 9; i++) { }
+            Vector3 wallPosition = new Vector3(0, 0, 0);
+            for (int i = 1; i < 12; i++)
+            {
+         
+                if (chunks.Count > 0)
+                {
+                    position = chunks[chunks.Count - 1].transform.Find("Connecter").position;
+                }
+                GameObject obj = Instantiate(ground, position, Quaternion.identity);
+                chunks.Add(obj);
+                AABB groundAABB = obj.GetComponent<AABB>();
+                CollisionManager.groundTiles.Add(groundAABB);
 
-            SpawnPowerUp();
-            SpawnSpikes();
-            SpawnLava();
-        
-            GameObject Wallobj = Instantiate(wall, wallPosition, Quaternion.identity);
-            GameObject obj = Instantiate(ground, position, Quaternion.identity);
-
-            chunks.Add(obj);
-            walls.Add(Wallobj);
-
-          
-
-            AABB groundAABB = obj.GetComponent<AABB>();
-            AABB wallAABB = Wallobj.GetComponent<AABB>();
-
-
-
-            CollisionManager.walls.Add(wallAABB);
-
-            CollisionManager.groundTiles.Add(groundAABB);
+                WallSpawn(i);
+                SpawnPowerUp();
+                SpawnSpikes(i);
+                SpawnLava(i);
 
 
+
+
+            }
         }
+    }
+
+    private Vector3 WallSpawn(int i)
+    {
+        Vector3 wallPosition = new Vector3(0, 0, 0);
+        if (walls.Count > 0 && walls.Count < 6)
+        {
+            wallPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
+        }
+        GameObject Wallobj = Instantiate(wall, wallPosition, Quaternion.identity);
+        walls.Add(Wallobj);
+        AABB wallAABB = Wallobj.GetComponent<AABB>();
+        CollisionManager.walls.Add(wallAABB);
+        return wallPosition;
     }
 
     /// <summary>
@@ -122,25 +144,18 @@ public class GameController : MonoBehaviour {
     /// </summary>
     private void SpawnPowerUp()
     {
-        var spawn = Random.Range(1, 9);
-        Vector3 upPosition = new Vector3(0, 0, 0);
-        if (powerups.Count > 0)
+        for (int i = 1; i < 6; i++)
         {
-            //position = chunks[chunks.Count - 1].transform.Find("Connecter").position;
-            if (spawn == 1) upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint01").position;
-            if (spawn == 2) upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint02").position;
-            if (spawn == 3) upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint03").position;
-            if (spawn == 4) upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint04").position;
-            if (spawn == 5) upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint05").position;
-            if (spawn == 6) upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint06").position;
-            if (spawn == 7) upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint07").position;
-            if (spawn == 8) upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint08").position;
-            if (spawn == 9) upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint09").position;
+            Vector3 upPosition = new Vector3(0, 0, 0);
+            if (powerups.Count > 3 && powerups.Count <= 5)
+            {
+                upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
+            }
+            GameObject newObj = Instantiate(powerUp, upPosition, Quaternion.identity);
+            powerups.Add(newObj);
+            AABB powerAABB = newObj.GetComponent<AABB>();
+            CollisionManager.powerups.Add(powerAABB);
         }
-        GameObject newObj = Instantiate(powerUp, upPosition, Quaternion.identity);
-        powerups.Add(newObj);
-        AABB powerAABB = newObj.GetComponent<AABB>();
-        CollisionManager.powerups.Add(powerAABB);
 
     }
     /// <summary>
@@ -148,19 +163,12 @@ public class GameController : MonoBehaviour {
     /// creates random number for where a lava needs to spawn.
     /// Adds it to the collision manager, array, and to the exact position of the spawn point
     /// </summary>
-    private void SpawnLava()
+    private void SpawnLava(int i)
     {
-        var rand = Random.Range(1, 6);
-        Vector3 lvPosition = new Vector3(0, 1, 0);
-        if (lavas.Count > 0)
+        Vector3 lvPosition = new Vector3(0, .3f, 0);
+        if (lavas.Count > 0 && lavas.Count <= 2)
         {
-            //position = chunks[chunks.Count - 1].transform.Find("Connecter").position;
-            if (rand == 1) lvPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint01").position;
-            if (rand == 2) lvPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint02").position;
-            if (rand == 3) lvPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint03").position;
-            if (rand == 4) lvPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint07").position;
-            if (rand == 5) lvPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint08").position;
-            if (rand == 6) lvPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint09").position;
+            lvPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
         }
         GameObject lavaobj = Instantiate(lavaO, lvPosition, Quaternion.identity);
         AABB lavaAABB = lavaobj.GetComponent<AABB>();
@@ -172,16 +180,12 @@ public class GameController : MonoBehaviour {
     /// creates random number for where a spike needs to spawn.
     /// Adds it to the collision manager, array, and to the exact position of the spawn point
     /// </summary>
-    private void SpawnSpikes()
+    private void SpawnSpikes(int i)
     {
-        var ofran = Random.Range(1, 3);
-        Vector3 ranP = new Vector3(0, 1, 0);
-        if (spikes.Count > 0)
+        Vector3 ranP = new Vector3(0, 2, 0);
+        if (spikes.Count > 0 && spikes.Count < 2)
         {
-            //position = chunks[chunks.Count - 1].transform.Find("Connecter").position;
-            if (ofran == 1) ranP = chunks[chunks.Count - 1].transform.Find("SpawnPoint10").position;
-            if (ofran == 2) ranP = chunks[chunks.Count - 1].transform.Find("SpawnPoint11").position;
-            if (ofran == 3) ranP = chunks[chunks.Count - 1].transform.Find("SpawnPoint12").position;
+            ranP = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
         }
         GameObject obj = Instantiate(spike, ranP, Quaternion.identity);
         spikes.Add(obj);

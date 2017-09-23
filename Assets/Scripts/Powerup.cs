@@ -33,17 +33,17 @@ public class Powerup : MonoBehaviour {
                 return;
                 break;
             case 2:
-                PlayerController.score += 1000;
+                PlayerController.score += 100;
                 GetComponent<MeshRenderer>().material.color = Color.magenta;
                 return;
                 break;
             case 3:
-                PlayerController.score += 3000;
+                PlayerController.score += 200;
                 GetComponent<MeshRenderer>().material.color = Color.cyan;
                 return;
                 break;
             case 4:
-                PlayerController.score -= 1000;
+                PlayerController.score -= 3000;
                 GetComponent<MeshRenderer>().material.color = Color.black;
                 return;
                 break;
@@ -53,7 +53,7 @@ public class Powerup : MonoBehaviour {
                 return;
                 break;
             case 6:
-                isResetPowerup = true;
+                PlayerController.score = 0;
                 GetComponent<MeshRenderer>().material.color = Color.green;
                 return;
                 break;

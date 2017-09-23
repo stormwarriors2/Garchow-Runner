@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     private bool moveLeft = false;
     private bool moveRight = false;
-    private float jumpCap = 3;
+    private float jumpCap = 5;
     private int lane = 0;
     private bool isSliding = false;
     private bool isJumping = false;
@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour {
     private float slideTimer = 0;
     private float moveDelay = 0;
     public float speed = 10;
+    public float acceleration;
     public float gravity = 10;
     public float velX = 10;
     public float velY = 0;
@@ -31,18 +32,20 @@ public class PlayerController : MonoBehaviour {
     public bool stopGravity = false;
     public float addedMoveDelay = 0;
     public float multiplier;
-    public float velocity = 1;
+    public float velocity = 2;
     public float godTimer;
     public static bool isGod = false;
     public static int score = 0;
     public static int life = 0;
     //private Vector3
+    public AudioClip jump;
 
 
     // Use this for initialization
     void Start () {
-        life = 1;
-       // score = 0;
+        life = 2;
+        this.pos.y = 15;
+        score = 0;
 
     }
 	
@@ -50,17 +53,22 @@ public class PlayerController : MonoBehaviour {
 	void Update ()
     {
         Run();
-        //UpdateScore.score++; 
-        score += 5;
+        if (life > 1)
+        {
+            score += 5;
+            if (life == 3)
+            {
+                score++;
+            }
+        }
     }
+   
     /// <summary>
     /// Run
     /// Player movement and axis movement
     /// </summary>
     private void Run()
     {
-        //timer = 60 * Time.deltaTime;
-        //print(timer);
 
         float jumping = Input.GetAxis("Jump");
         float movingHorizontal = Input.GetAxisRaw("Horizontal");
@@ -72,16 +80,18 @@ public class PlayerController : MonoBehaviour {
 
         if (stopGravity == false)
         {
-            float accY = gravity * Time.deltaTime;
+            float accY = gravity * Time.deltaTime * 2;
             GRAVITY = (gravity * Time.deltaTime) * 2;
             pos.y += velY - GRAVITY;
             transform.position = pos;
         }
 
 
-        if (jumping > 0 && jumpTimer < .4f)
+        if (jumping > 0 && jumpTimer < .1f)
         {
+
             //velocity = gravity * Time.deltaTime;
+            AudioSource.PlayClipAtPoint(jump, transform.position);
             jumpTimer += speed * Time.deltaTime;
             Jump();
         }
@@ -119,7 +129,18 @@ public class PlayerController : MonoBehaviour {
             slideTimer = 0;
 
         }
-
+        if  (score > 10000)
+        {
+            speed += 5;
+            if (score > 45000)
+            {
+                speed += 10;
+            }
+        }
+        if (moveDelay > 0)
+        {
+            moveDelay = moveDelay - Time.deltaTime;
+        }
         if (transform.localPosition.y >= jumpCap)
         {
             transform.localPosition = new Vector3(transform.localPosition.x, jumpCap);
@@ -129,13 +150,6 @@ public class PlayerController : MonoBehaviour {
         {
             transform.localScale = Vector3.one;
         }
-
-        if (moveDelay > 0)
-        {
-            moveDelay = moveDelay - Time.deltaTime;
-        }
-
-
 
         if (lane > 1)
         {
@@ -155,7 +169,8 @@ public class PlayerController : MonoBehaviour {
     {
         //print("Jumping");
         //transform.Translate(new Vector3(0, (jumpTimer * 10), 0));
-        velY += speed * Time.deltaTime;
+        
+        velY += speed * Time.deltaTime * 250;
         pos.y = velY;
 
     }
@@ -164,21 +179,19 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     void Slide()
     {
-        //print("Sliding");
-        
         transform.localScale = new Vector3(transform.localScale.x, .5f, transform.localScale.z);
-        if(speed > 3)
+        if (speed > 3)
         {
             speed = 10 - slideTimer * 3 * Time.deltaTime;
         }
-        
-        GetComponent<AABB>().halfSize.y = .25f;
 
+        GetComponent<AABB>().halfSize.y = .25f;
     }
-    /// <summary>
-    /// 
-    /// </summary>
-    void SwapLanes()
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void SwapLanes()
     {
 
         if(moveRight == true)
@@ -216,7 +229,7 @@ public class PlayerController : MonoBehaviour {
     /// Apply Fix 
     /// Fixes the player position and moves them to a new position
     /// </summary>
-    /// <paramHow far to move the player
+    /// <param>How far to move the player </param>
 
     public void ApplyFix(Vector3 fix)
     {

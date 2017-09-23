@@ -11,12 +11,20 @@ public class CollisionManager : MonoBehaviour {
     static public List<AABB> walls = new List<AABB>();
     static public List<AABB> spikes = new List<AABB>();
     static public List<AABB> lavaground = new List<AABB>();
+    public AudioClip lose;
+    public AudioClip coin;
+    public AudioClip upone;
 
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         player = GameObject.Find("Player").GetComponent<AABB>();
-   //     walled = GameObject.Find("Wall01").GetComponent<AABB>();
+        groundTiles.Clear();
+        powerups.Clear();
+        walls.Clear();
+        spikes.Clear();
+        lavaground.Clear();
+        //     walled = GameObject.Find("Wall01").GetComponent<AABB>();
     }
 	
 	// Update is called once per frame
@@ -79,11 +87,13 @@ public class CollisionManager : MonoBehaviour {
         //print(resultWall);
         if (resultWall == true)
         {
-                PlayerController.life -= 1;
+                if (wall != null) { 
                 Destroy(wall.gameObject);
                 walls.Remove(wall);
+                PlayerController.life -= 1;
                 GetComponent<GameController>().walls.Remove(wall.gameObject);
                 return;
+                    }
              //   print("collider");
         }
         else
@@ -109,13 +119,19 @@ public class CollisionManager : MonoBehaviour {
 
             if (resultPowerup == true)
             {
-                powerup.GetComponent<Powerup>().obtainPowerup();
-                if (powerup.GetComponent<Powerup>().canRemove == true)
+                if (powerup != null)
                 {
-                    Destroy(powerup.gameObject);
-                    powerups.Remove(powerup);
-                    GetComponent<GameController>().powerups.Remove(powerup.gameObject);
-                    return;
+
+                    powerup.GetComponent<Powerup>().obtainPowerup();
+                    AudioSource.PlayClipAtPoint(coin, transform.position);
+                    if (powerup.GetComponent<Powerup>().canRemove == true)
+                {
+                  
+                        Destroy(powerup.gameObject);
+                        powerups.Remove(powerup);
+                        GetComponent<GameController>().powerups.Remove(powerup.gameObject);
+                        return;
+                    }
                 }
             }
         }
@@ -124,15 +140,19 @@ public class CollisionManager : MonoBehaviour {
     {
         foreach (AABB lava in lavaground)
         {
-            bool resultWall = player.checkOverlap(lava);
+            bool resultLava = player.checkOverlap(lava);
             //print(resultWall);
-            if (resultWall == true)
+            if (resultLava == true)
             {
-                PlayerController.life -= 2;
-                Destroy(lava.gameObject);
-                lavaground.Remove(lava);
-                GetComponent<GameController>().lavas.Remove(lava.gameObject);
-                return;
+                if (lava != null)
+                {
+                    AudioSource.PlayClipAtPoint(lose, transform.position);
+                    PlayerController.life -= 2;
+                    Destroy(lava.gameObject);
+                    lavaground.Remove(lava);
+                    GetComponent<GameController>().lavas.Remove(lava.gameObject);
+                    return;
+                }
                 //   print("collider");
             }
             else
@@ -144,13 +164,16 @@ public class CollisionManager : MonoBehaviour {
     }
     void DoCollisionDetectionSpike()
     {
+
         foreach (AABB spike in spikes)
         {
-            bool resultWall = player.checkOverlap(spike);
+            if (spike != null)
+            {
+                bool resultWall = player.checkOverlap(spike);
             //print(resultWall);
             if (resultWall == true)
             {
-
+              
                 PlayerController.life -= 1;
               //  PlayerController.life -= 2;
                 Destroy(spike.gameObject);
@@ -158,6 +181,7 @@ public class CollisionManager : MonoBehaviour {
                 GetComponent<GameController>().spikes.Remove(spike.gameObject);
                 return;
                 //   print("collider");
+                }
             }
             else
             {
