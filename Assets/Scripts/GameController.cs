@@ -63,6 +63,7 @@ public class GameController : MonoBehaviour {
     {
         chunkCreator();
         Lose();
+        Remove();
     }
 
 
@@ -86,7 +87,7 @@ public class GameController : MonoBehaviour {
 
       
       
-        Remove();
+
         while (chunks.Count <= 7)
         {
             Vector3 position = Vector3.zero;
@@ -126,7 +127,7 @@ public class GameController : MonoBehaviour {
     private Vector3 WallSpawn(int i)
     {
         Vector3 wallPosition = new Vector3(0, 0, 0);
-        if (walls.Count > 0 && walls.Count < 6)
+        if (walls.Count > 0 && walls.Count < 6 && walls.Count < 8 && walls.Count < 12)
         {
             wallPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
         }
@@ -144,10 +145,10 @@ public class GameController : MonoBehaviour {
     /// </summary>
     private void SpawnPowerUp()
     {
-        for (int i = 1; i < 6; i++)
+        for (int i = 1; i < 8; i++)
         {
-            Vector3 upPosition = new Vector3(0, 0, 0);
-            if (powerups.Count > 3 && powerups.Count <= 5)
+            Vector3 upPosition = new Vector3(0, 2, 0);
+            if (powerups.Count > 3 && powerups.Count <= 8)
             {
                 upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
             }
@@ -165,8 +166,8 @@ public class GameController : MonoBehaviour {
     /// </summary>
     private void SpawnLava(int i)
     {
-        Vector3 lvPosition = new Vector3(0, .3f, 0);
-        if (lavas.Count > 0 && lavas.Count <= 2)
+        Vector3 lvPosition = new Vector3(0, 2, 0);
+        if (lavas.Count > 4 && lavas.Count <= 7)
         {
             lvPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
         }
@@ -206,11 +207,7 @@ public class GameController : MonoBehaviour {
             SceneManager.LoadScene("GameOver");
             //game over
         }
-        else
-        {
-            print("your fine");
-        }
-
+      
 
     }
 
@@ -229,6 +226,15 @@ public class GameController : MonoBehaviour {
     /// </summary>
     private void Remove()
     {
+        if (powerups.Count > 0)
+        {
+            if (player.position.x - powerups[0].transform.position.x > 25)
+            {
+                Destroy(powerups[0]);
+                powerups.RemoveAt(0);
+                CollisionManager.powerups.RemoveAt(0);
+            }
+        }
         if (chunks.Count > 0)
         {
             if (player.position.x - chunks[0].transform.position.x > 35)
@@ -238,15 +244,7 @@ public class GameController : MonoBehaviour {
                 CollisionManager.groundTiles.RemoveAt(0);
             }
         }
-        if (powerups.Count > 0 )
-        {
-            if (player.position.x - powerups[0].transform.position.x > 25)
-            {
-                Destroy(powerups[0]);
-                powerups.RemoveAt(0);
-                CollisionManager.powerups.RemoveAt(0);
-            }
-        }
+
         if (walls.Count > 0)
         {
             if (player.position.x - walls[0].transform.position.x > 25)

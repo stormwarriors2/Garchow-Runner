@@ -100,11 +100,6 @@ public class CollisionManager : MonoBehaviour {
                     }
              //   print("collider");
         }
-        else
-            {
-
-                print("no collision!");
-            }
     }
     }
 
@@ -159,11 +154,7 @@ public class CollisionManager : MonoBehaviour {
                 }
                 //   print("collider");
             }
-            else
-            {
-
-                print("no collision!");
-            }
+            
         }
     }
     void DoCollisionDetectionSpike()
