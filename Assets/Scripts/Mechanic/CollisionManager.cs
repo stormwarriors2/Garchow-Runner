@@ -14,6 +14,7 @@ public class CollisionManager : MonoBehaviour {
     public AudioClip lose;
     public AudioClip coin;
     public AudioClip upone;
+    public AudioClip wallhit;
 
 
     // Use this for initialization
@@ -89,8 +90,9 @@ public class CollisionManager : MonoBehaviour {
         //print(resultWall);
         if (resultWall == true)
         {
-                if (wall != null) { 
-                Destroy(wall.gameObject);
+                if (wall != null) {
+                    AudioSource.PlayClipAtPoint(wallhit, transform.position);
+                    Destroy(wall.gameObject);
                 walls.Remove(wall);
                 PlayerController.life -= 1;
                 GetComponent<GameController>().walls.Remove(wall.gameObject);
@@ -171,12 +173,13 @@ public class CollisionManager : MonoBehaviour {
         {
             if (spike != null)
             {
+               
                 bool resultWall = player.checkOverlap(spike);
             //print(resultWall);
             if (resultWall == true)
             {
-              
-                PlayerController.life -= 1;
+                    AudioSource.PlayClipAtPoint(wallhit, transform.position);
+                    PlayerController.life -= 1;
               //  PlayerController.life -= 2;
                 Destroy(spike.gameObject);
                 spikes.Remove(spike);
