@@ -5,17 +5,21 @@ using UnityEngine.SceneManagement;
 
 public class EndingScene : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-       // UpdateScore.text = "Score: " + PlayerController.score;
-	}
-
     // Update is called once per frame
+    /// <summary>
+    /// Update
+    /// Calls every second teh Restart Method
+    /// </summary>
     void Update()
     {
         Restart();
     }
 
+    /// <summary>
+    /// Restart
+    /// Asks for certain button ENTER)
+    /// Loads MainMenu Scene
+    /// </summary>
     private void Restart()
     {
         if (Input.GetButtonDown("Submit"))

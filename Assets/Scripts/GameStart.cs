@@ -6,18 +6,21 @@ using UnityEngine.SceneManagement;
 public class GameStart : MonoBehaviour
 {
 
-    // Use this for initialization
-    void Start()
-    {
 
-    }
-
-    // Update is called once per frame
+    /// <summary>
+    /// Update
+    /// Calls every second the GameBegin Method
+    /// </summary>
     void Update()
     {
         GameBegin();
     }
 
+    /// <summary>
+    /// GameBegin
+    /// Asks for certain button ENTER)
+    /// Loads GameBegin Scene
+    /// </summary>
     private void GameBegin()
     {
         if (Input.GetButtonDown("Submit"))

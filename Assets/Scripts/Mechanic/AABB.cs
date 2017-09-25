@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AABB : MonoBehaviour {
-
+# region Variables
     List<AABB> currentOverlaps = new List<AABB>();
 
     public Vector3 halfSize;
@@ -12,18 +12,29 @@ public class AABB : MonoBehaviour {
     Vector3 max = Vector3.zero;
 
     public Vector3 offset;
-	
-	// Update is called once per frame
-	void Update () {
+#endregion 
+    // Update is called once per frame
+    void Update () {
         calcEdges();
 	}
-
+    /// <summary>
+    /// calcEdges
+    /// Calculates the edges and halfsize from teh center point of the object
+    /// From the Min and Max Edges
+    /// </summary>
     public void calcEdges()
     {
         min = transform.position - halfSize;
         max = transform.position + halfSize;
     }
 
+    /// <summary>
+    /// Check Overlap
+    /// Checks Overlap of the Objects AABB
+    /// The objects x,y,z are all checked to another objects 
+    /// </summary>
+    /// <param AABB = "other"></param>
+    /// <returns></returns>
     public bool checkOverlap(AABB other)
     {
         if(other != null)
@@ -43,7 +54,13 @@ public class AABB : MonoBehaviour {
     }
 
     //How far to move this AABB to correct its overlap with other AABB
-
+    /// <summary>
+    /// CalculateOverlapFix
+    /// Checks the Objects overlap and then moves it right, up, forward, left, down or back,
+    /// Solution is the x,y,z of the coordinate away from the object.
+    /// </summary>
+    /// <param AABB="other"></param>
+    /// <returns> Solution of the answer given by the objects X,Y,Z </returns>
     public Vector3 CalculateOverlapFix(AABB other)
     {
         

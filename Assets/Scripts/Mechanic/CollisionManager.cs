@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CollisionManager : MonoBehaviour {
-
+    #region Variables
     AABB player;
 
     static public List<AABB> groundTiles = new List<AABB>();
@@ -16,7 +16,7 @@ public class CollisionManager : MonoBehaviour {
     public AudioClip upone;
     public AudioClip wallhit;
 
-
+#endregion
     // Use this for initialization
     void Start () {
         player = GameObject.Find("Player").GetComponent<AABB>();
@@ -40,6 +40,13 @@ public class CollisionManager : MonoBehaviour {
             DoCollisionDetectionSpike();
         }
     }
+    #region Collision Detection Game Objects
+    /// Ground
+    /// Lava
+    /// Spike
+    /// PowerUp
+    /// Wall
+
     /// <summary>
     /// Collision Detection - Ground
     /// Detects collision between player and ground
@@ -135,6 +142,14 @@ public class CollisionManager : MonoBehaviour {
             }
         }
     }
+    /// <summary>
+    /// Collision Detection - Lava
+    /// Detects collision between player and powerup
+    /// Object does many things
+    /// Is destroyed on touch
+    /// Minuses life from playercontroller
+    /// is then removed
+    /// </summary>
     void DoCollisionDetectionLava()
     {
         foreach (AABB lava in lavaground)
@@ -157,6 +172,15 @@ public class CollisionManager : MonoBehaviour {
             
         }
     }
+    /// <summary>
+    /// Collision Detection - Spike
+    /// Detects collision between player and powerup
+    /// Object does many things
+    /// Is destroyed on touch
+    /// Deals 1 damage to player
+    /// Removes 200 points
+    /// 
+    /// </summary>
     void DoCollisionDetectionSpike()
     {
 
@@ -171,7 +195,7 @@ public class CollisionManager : MonoBehaviour {
             {
                     AudioSource.PlayClipAtPoint(wallhit, transform.position);
                     PlayerController.life -= 1;
-              //  PlayerController.life -= 2;
+                    PlayerController.score -= 200;
                 Destroy(spike.gameObject);
                 spikes.Remove(spike);
                 GetComponent<GameController>().spikes.Remove(spike.gameObject);
@@ -181,9 +205,8 @@ public class CollisionManager : MonoBehaviour {
             }
             else
             {
-
-                print("no collision!");
             }
         }
     }
+#endregion
 }

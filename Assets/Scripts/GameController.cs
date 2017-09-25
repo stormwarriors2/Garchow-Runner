@@ -18,6 +18,7 @@ using UnityEngine.SceneManagement;
 /// This was designed based on Nick Pattison's version but using heavily modified
 /// </summary>
 public class GameController : MonoBehaviour {
+    #region Variables
 
     public GameObject ground;
     public Transform player;
@@ -33,7 +34,7 @@ public class GameController : MonoBehaviour {
     public List<GameObject> walls = new List<GameObject>();
     public List<GameObject> powerups = new List<GameObject>();
     public List<GameObject> spikes = new List<GameObject>();
-
+#endregion
     // Use this for initialization
     void Start ()
     {
@@ -66,6 +67,7 @@ public class GameController : MonoBehaviour {
         Remove();
     }
 
+    #region Spawning/Creation
 
     /// <summary>
     /// Chunk Creator
@@ -131,12 +133,20 @@ public class GameController : MonoBehaviour {
         {
             wallPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
         }
-        GameObject Wallobj = Instantiate(wall, wallPosition, Quaternion.identity);
-        walls.Add(Wallobj);
-        AABB wallAABB = Wallobj.GetComponent<AABB>();
-        CollisionManager.walls.Add(wallAABB);
+        else
+        {
+            
+        }
+            GameObject Wallobj = Instantiate(wall, wallPosition, Quaternion.identity);
+            walls.Add(Wallobj);
+            AABB wallAABB = Wallobj.GetComponent<AABB>();
+            CollisionManager.walls.Add(wallAABB);
+        if (wallPosition.x < 1 && wallPosition.z < 1 && wallPosition.z < 1){
+            RemoveWall();
+        }
         return wallPosition;
     }
+
 
     /// <summary>
     /// Spawns PowerUp 
@@ -156,9 +166,15 @@ public class GameController : MonoBehaviour {
             powerups.Add(newObj);
             AABB powerAABB = newObj.GetComponent<AABB>();
             CollisionManager.powerups.Add(powerAABB);
+            if (upPosition.x < 1 && upPosition.z < 1 && upPosition.z < 1)
+            {
+                RemovePowerUps();
+            }
         }
 
     }
+
+
     /// <summary>
     /// Spawns lava 
     /// creates random number for where a lava needs to spawn.
@@ -175,7 +191,13 @@ public class GameController : MonoBehaviour {
         AABB lavaAABB = lavaobj.GetComponent<AABB>();
         CollisionManager.lavaground.Add(lavaAABB);
         lavas.Add(lavaobj);
+        if (lvPosition.x < 1 && lvPosition.z < 1 && lvPosition.z < 1)
+        {
+            RemoveLava();
+        }
     }
+
+
     /// <summary>
     /// Spawns Spikes 
     /// creates random number for where a spike needs to spawn.
@@ -192,7 +214,15 @@ public class GameController : MonoBehaviour {
         spikes.Add(obj);
         AABB spikeAABB = obj.GetComponent<AABB>();
         CollisionManager.spikes.Add(spikeAABB);
+        if (ranP.x < 1 && ranP.z < 1 && ranP.z < 1)
+        {
+            RemoveSpikes();
+        }
     }
+
+    #endregion
+    #region LoseState
+
     /// <summary>
     /// Lose
     /// This is the controller to check to see if the player has lost all its life
@@ -210,7 +240,9 @@ public class GameController : MonoBehaviour {
       
 
     }
+#endregion
 
+    #region //// Removal/Garbage Disposal
     /// <summary>
     /// Remove
     /// Removes Chunks from array, and from scene
@@ -226,6 +258,21 @@ public class GameController : MonoBehaviour {
     /// </summary>
     private void Remove()
     {
+        RemovePowerUps();
+        RemoveChunks();
+        RemoveWall();
+        RemoveLava();
+        RemoveSpikes();
+    }
+
+
+    /// <summary>
+    /// Remove PowerUps
+    /// 
+    /// Removes Powerups from the array according to the players Position
+    /// </summary>
+    private void RemovePowerUps()
+    {
         if (powerups.Count > 0)
         {
             if (player.position.x - powerups[0].transform.position.x > 25)
@@ -235,6 +282,16 @@ public class GameController : MonoBehaviour {
                 CollisionManager.powerups.RemoveAt(0);
             }
         }
+    }
+
+
+    /// <summary>
+    /// Remove chunks
+    /// 
+    /// Removes chunks from the array according to the players Position
+    /// </summary>
+    private void RemoveChunks()
+    {
         if (chunks.Count > 0)
         {
             if (player.position.x - chunks[0].transform.position.x > 35)
@@ -244,16 +301,16 @@ public class GameController : MonoBehaviour {
                 CollisionManager.groundTiles.RemoveAt(0);
             }
         }
+    }
 
-        if (walls.Count > 0)
-        {
-            if (player.position.x - walls[0].transform.position.x > 25)
-            {
-                Destroy(walls[0]);
-                walls.RemoveAt(0);
-                CollisionManager.walls.RemoveAt(0);
-            }
-        }
+
+    /// <summary>
+    /// Remove Lava
+    /// 
+    /// Removes Lava from the array according to the players Position
+    /// </summary>
+    private void RemoveLava()
+    {
         if (lavas.Count > 0)
         {
             if (player.position.x - lavas[0].transform.position.x > 25)
@@ -263,6 +320,15 @@ public class GameController : MonoBehaviour {
                 CollisionManager.lavaground.RemoveAt(0);
             }
         }
+    }
+
+    /// <summary>
+    /// Remove Spikes
+    /// 
+    /// Removes spikes from the array according to the players Position.x
+    /// </summary>
+    private void RemoveSpikes()
+    {
         if (spikes.Count > 0)
         {
             if (player.position.x - spikes[0].transform.position.x > 15)
@@ -273,4 +339,23 @@ public class GameController : MonoBehaviour {
             }
         }
     }
+
+    /// <summary>
+    /// Remove Wall
+    /// 
+    /// Removes wall from the array according to the players Position
+    /// </summary>
+    private void RemoveWall()
+    {
+        if (walls.Count > 0)
+        {
+            if (player.position.x - walls[0].transform.position.x > 25)
+            {
+                Destroy(walls[0]);
+                walls.RemoveAt(0);
+                CollisionManager.walls.RemoveAt(0);
+            }
+        }
+    }
+#endregion
 }
