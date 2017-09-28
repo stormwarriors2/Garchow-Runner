@@ -128,20 +128,21 @@ public class GameController : MonoBehaviour {
 
     private Vector3 WallSpawn(int i)
     {
-        Vector3 wallPosition = new Vector3(0, 0, 0);
-        if (walls.Count > 0 && walls.Count < 6 && walls.Count < 8 && walls.Count < 12)
+        Vector3 wallPosition = Vector3.zero;
+        if (walls.Count > 0 && walls.Count > 6 && walls.Count < 8)
         {
             wallPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
         }
-        else
+        if (walls.Count == 3)
         {
-            
+            wallPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
         }
-            GameObject Wallobj = Instantiate(wall, wallPosition, Quaternion.identity);
+
+        GameObject Wallobj = Instantiate(wall, wallPosition, Quaternion.identity);
             walls.Add(Wallobj);
             AABB wallAABB = Wallobj.GetComponent<AABB>();
             CollisionManager.walls.Add(wallAABB);
-        if (wallPosition.x < 1 && wallPosition.z < 1 && wallPosition.z < 1){
+        if (wallPosition.x < 1){
             RemoveWall();
         }
         return wallPosition;
@@ -155,18 +156,25 @@ public class GameController : MonoBehaviour {
     /// </summary>
     private void SpawnPowerUp()
     {
-        for (int i = 1; i < 8; i++)
+        for (int i = 1; i < 12; i++)
         {
             Vector3 upPosition = new Vector3(0, 2, 0);
-            if (powerups.Count > 3 && powerups.Count <= 8)
+            if (powerups.Count >= 3 && powerups.Count <= 5)
             {
                 upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
             }
+            if (powerups.Count <= 2 || powerups.Count == 1)
+            {
+                upPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
+
+            }
+                
+       
             GameObject newObj = Instantiate(powerUp, upPosition, Quaternion.identity);
             powerups.Add(newObj);
             AABB powerAABB = newObj.GetComponent<AABB>();
             CollisionManager.powerups.Add(powerAABB);
-            if (upPosition.x < 1 && upPosition.z < 1 && upPosition.z < 1)
+            if (upPosition.x < 1 && upPosition.y <= 2)
             {
                 RemovePowerUps();
             }
@@ -187,11 +195,16 @@ public class GameController : MonoBehaviour {
         {
             lvPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
         }
+        if (lavas.Count == 5 || lavas.Count == 2)
+        {
+            lvPosition = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
+
+        }
         GameObject lavaobj = Instantiate(lavaO, lvPosition, Quaternion.identity);
         AABB lavaAABB = lavaobj.GetComponent<AABB>();
         CollisionManager.lavaground.Add(lavaAABB);
         lavas.Add(lavaobj);
-        if (lvPosition.x < 1 && lvPosition.z < 1 && lvPosition.z < 1)
+        if (lvPosition.x < 1)
         {
             RemoveLava();
         }
@@ -206,7 +219,7 @@ public class GameController : MonoBehaviour {
     private void SpawnSpikes(int i)
     {
         Vector3 ranP = new Vector3(0, 2, 0);
-        if (spikes.Count > 0 && spikes.Count < 2)
+        if (spikes.Count > 0 && spikes.Count < 2 || spikes.Count > 1)
         {
             ranP = chunks[chunks.Count - 1].transform.Find("SpawnPoint0" + i.ToString()).position;
         }
@@ -214,7 +227,7 @@ public class GameController : MonoBehaviour {
         spikes.Add(obj);
         AABB spikeAABB = obj.GetComponent<AABB>();
         CollisionManager.spikes.Add(spikeAABB);
-        if (ranP.x < 1 && ranP.z < 1 && ranP.z < 1)
+        if (ranP.x < 1)
         {
             RemoveSpikes();
         }
@@ -275,7 +288,7 @@ public class GameController : MonoBehaviour {
     {
         if (powerups.Count > 0)
         {
-            if (player.position.x - powerups[0].transform.position.x > 25)
+            if (player.position.x - powerups[0].transform.position.x > 45)
             {
                 Destroy(powerups[0]);
                 powerups.RemoveAt(0);
@@ -313,7 +326,7 @@ public class GameController : MonoBehaviour {
     {
         if (lavas.Count > 0)
         {
-            if (player.position.x - lavas[0].transform.position.x > 25)
+            if (player.position.x - lavas[0].transform.position.x > 45)
             {
                 Destroy(lavas[0]);
                 lavas.RemoveAt(0);
@@ -331,7 +344,7 @@ public class GameController : MonoBehaviour {
     {
         if (spikes.Count > 0)
         {
-            if (player.position.x - spikes[0].transform.position.x > 15)
+            if (player.position.x - spikes[0].transform.position.x > 45)
             {
                 Destroy(spikes[0]);
                 spikes.RemoveAt(0);
@@ -349,7 +362,7 @@ public class GameController : MonoBehaviour {
     {
         if (walls.Count > 0)
         {
-            if (player.position.x - walls[0].transform.position.x > 25)
+            if (player.position.x - walls[0].transform.position.x > 45)
             {
                 Destroy(walls[0]);
                 walls.RemoveAt(0);

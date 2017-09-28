@@ -53,6 +53,7 @@ public class Powerup : MonoBehaviour {
                 GetComponent<MeshRenderer>().material.color = Color.green;
                 return;
             case 7:
+                isLife = true;
                 PlayerController.isGod = true;
                 GetComponent<MeshRenderer>().material.color = Color.yellow;
                 return;
